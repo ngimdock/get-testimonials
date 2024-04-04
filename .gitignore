@@ -6,6 +6,8 @@
 .pnp.js
 .yarn/install-state.gz
 
+.env
+client_secret_511059384713-or473a5rpt5fie5sie76cke6sn452qsk.apps.googleusercontent.com.json
 # testing
 /coverage
 
