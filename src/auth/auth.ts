@@ -3,7 +3,7 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { env } from "../env";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export const {
   handlers,
