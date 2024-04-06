@@ -12,6 +12,7 @@ import { LayoutTitle, LayoutWrapper } from "@/features/layout/layaout-wrapper";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 import { Product } from "@prisma/client";
+import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{}>) {
   const user = await requiredCurrentUser();
@@ -31,9 +32,12 @@ export default async function RoutePage(props: PageParams<{}>) {
         {products.length ? (
           <ProductTable products={products} />
         ) : (
-          <button className="w-full rounded-lg border-2 border-dashed border-primary p-8 transition-colors hover:bg-accent/40 lg:p-12">
+          <Link
+            href="/products/new"
+            className="flex w-full  items-center justify-center rounded-lg border-2 border-dashed border-primary p-8 transition-colors hover:bg-accent/40 lg:p-12"
+          >
             Create Product
-          </button>
+          </Link>
         )}
       </Card>
     </LayoutWrapper>
