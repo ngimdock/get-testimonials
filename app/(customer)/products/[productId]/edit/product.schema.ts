@@ -5,7 +5,7 @@ export const ProductSchema = z.object({
   slug: z
     .string()
     .regex(/^[a-zA-Z0-9_-]+$/)
-    .min(10)
+    .min(5)
     .max(20),
   image: z.string().optional().nullable(),
   noteText: z.string().optional().nullable(),

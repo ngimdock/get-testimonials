@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignInButton } from "@/features/auth/SignInButton";
 import { LayoutWrapper } from "@/features/layout/layaout-wrapper";

@@ -100,6 +100,33 @@ export const ProductForm = ({ defaultValues }: ProductFormProps) => {
 
           <FormField
             control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="iphone-15"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value
+                        .replaceAll(/ /g, "-")
+                        .toLowerCase();
+
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>
+                  The slug is used in the url of the review page
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="backgroundColor"
             render={({ field }) => (
               <FormItem>
