@@ -1,6 +1,11 @@
+"use client";
+
 import { ThemeProvider } from "@/features/theme/ThemeProvider";
 import type { PropsWithChildren } from "react";
 import { Toaster } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export type ProvidersProps = PropsWithChildren;
 
@@ -12,8 +17,10 @@ export const Providers = ({ children }: ProvidersProps) => {
       enableSystem
       disableTransitionOnChange
     >
-      <Toaster />
-      {children}
+      <QueryClientProvider client={queryClient}>
+        <Toaster />
+        {children}
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };

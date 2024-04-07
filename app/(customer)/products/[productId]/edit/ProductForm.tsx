@@ -22,6 +22,10 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { createProductAction } from "./product.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export type ProductFormProps = {
   defaultValues?: ProductType;
@@ -38,12 +42,29 @@ const GRADIENTS_COLORS_CLASSES = [
 ];
 
 export const ProductForm = ({ defaultValues }: ProductFormProps) => {
+  const router = useRouter();
   const form = useZodForm({
     schema: ProductSchema,
     defaultValues,
   });
 
   const isCreate = !Boolean(defaultValues);
+
+  const mutation = useMutation({
+    mutationFn: async (values: ProductType) => {
+      const { data, serverError } = await createProductAction(values);
+
+      if (serverError || !data) {
+        toast.error(serverError);
+        return;
+      }
+
+      toast.success("Product created successfully");
+
+      router.push(`/products/${data.product.id}`);
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -56,7 +77,7 @@ export const ProductForm = ({ defaultValues }: ProductFormProps) => {
         <Form
           form={form}
           onSubmit={async (values) => {
-            console.log({ values });
+            await mutation.mutateAsync(values);
           }}
           className="flex flex-col space-y-4 "
         >
