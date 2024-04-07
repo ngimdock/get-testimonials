@@ -23,11 +23,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { createProductAction } from "./product.action";
+import { createProductAction, updateProductAction } from "./product.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export type ProductFormProps = {
+  productId?: string;
   defaultValues?: ProductType;
 };
 
@@ -41,7 +42,7 @@ const GRADIENTS_COLORS_CLASSES = [
   "bg-gradient-to-r from-emerald-500 to-emerald-900",
 ];
 
-export const ProductForm = ({ defaultValues }: ProductFormProps) => {
+export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
   const router = useRouter();
   const form = useZodForm({
     schema: ProductSchema,
@@ -52,14 +53,16 @@ export const ProductForm = ({ defaultValues }: ProductFormProps) => {
 
   const mutation = useMutation({
     mutationFn: async (values: ProductType) => {
-      const { data, serverError } = await createProductAction(values);
+      const { data, serverError } = isCreate
+        ? await createProductAction(values)
+        : await updateProductAction({ id: productId as string, data: values });
 
       if (serverError || !data) {
         toast.error(serverError);
         return;
       }
 
-      toast.success("Product created successfully");
+      toast.success(isCreate ? "Product created" : "Product updated");
 
       router.push(`/products/${data.product.id}`);
     },

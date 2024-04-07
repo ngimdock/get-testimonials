@@ -24,7 +24,7 @@ export default async function RoutePage(
   return (
     <LayoutWrapper>
       <LayoutTitle>Create Product</LayoutTitle>
-      <ProductForm defaultValues={product} />
+      <ProductForm defaultValues={product} productId={product.id} />
     </LayoutWrapper>
   );
 }
