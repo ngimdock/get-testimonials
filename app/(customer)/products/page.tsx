@@ -23,8 +23,6 @@ export default async function RoutePage(props: PageParams<{}>) {
     },
   });
 
-  console.log({ products });
-
   return (
     <LayoutWrapper>
       <LayoutTitle>Products</LayoutTitle>
@@ -49,11 +47,15 @@ function ProductTable({ products }: { products: Product[] }) {
     <Table>
       <TableHeader>
         <TableHead>Product Name</TableHead>
+        <TableHead>Product Slug</TableHead>
       </TableHeader>
       <TableBody>
         {products.map((product) => (
           <TableRow key={product.id}>
-            <TableCell>{product.name}</TableCell>
+            <Link href={`/products/${product.id}`}>
+              <TableCell>{product.name}</TableCell>
+            </Link>
+            <TableCell className="font-mono">{product.slug}</TableCell>
           </TableRow>
         ))}
       </TableBody>
