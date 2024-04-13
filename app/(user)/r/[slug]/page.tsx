@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import type { PageParams } from "@/types/next";
 import { notFound } from "next/navigation";
-import { ReviewsStep } from "./ReviewsStep";
+import { ProcessReviewStep } from "./ProcessReviewStep";
 
 export default async function RoutePage(props: PageParams<{ slug: string }>) {
   const product = await prisma.product.findUnique({
@@ -35,7 +35,7 @@ export default async function RoutePage(props: PageParams<{ slug: string }>) {
       </div>
 
       <div className="flex-1">
-        <ReviewsStep product={product} />
+        <ProcessReviewStep product={product} />
       </div>
     </div>
   );
