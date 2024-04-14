@@ -35,6 +35,8 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
     string | null
   >(`review-id-${product.id}`, null);
 
+  console.log({ reviewId });
+
   const queryClient = useQueryClient();
 
   const reviewData = useQuery({
@@ -45,8 +47,10 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
         productId: product.id,
       });
 
+      console.log({ data });
+
       if (serverError || !data) {
-        toast.error(serverError ?? "Failed to load review");
+        // toast.error("Failed to load review");
         return;
       }
 
@@ -55,22 +59,22 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
   });
 
   const mutateReview = useMutation({
-    mutationFn: async (reviewData: Partial<ReviewType>) => {
-      const { data, serverError } = await updateReviewAction({
-        ...reviewData,
+    mutationFn: async (data: Partial<ReviewType>) => {
+      const { data: reviewCreated, serverError } = await updateReviewAction({
+        ...data,
         id: reviewId ?? undefined,
         productId: product.id,
       });
 
-      if (serverError || !data) {
+      if (serverError || !reviewCreated) {
         toast.error(serverError ?? "Failed to save review");
         return;
       }
 
-      setReviewId(data.id);
+      setReviewId(reviewCreated.id);
 
       await queryClient.invalidateQueries({
-        queryKey: ["review", data.id, "product", product.id],
+        queryKey: ["review", reviewCreated.id, "product", product.id],
       });
     },
   });
@@ -102,9 +106,9 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
             </h2>
 
             <RatingSelector
-              onSelect={(review) => {
+              onSelect={(ratting) => {
                 updateData({
-                  ratting: review,
+                  ratting,
                 });
               }}
             />

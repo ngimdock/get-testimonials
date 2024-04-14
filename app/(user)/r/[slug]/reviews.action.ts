@@ -36,6 +36,8 @@ export const updateReviewAction = action(ReviewScheme, async (input) => {
   const userIp =
     headerList.get("x-real-ip") || headerList.get("x-forwarded-for");
 
+  console.log({ userIp });
+
   if (!userIp) {
     throw new Error("User IP not found");
   }
