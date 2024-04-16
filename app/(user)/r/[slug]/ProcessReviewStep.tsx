@@ -35,8 +35,6 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
     string | null
   >(`review-id-${product.id}`, null);
 
-  console.log({ reviewId });
-
   const queryClient = useQueryClient();
 
   const reviewData = useQuery({
@@ -46,8 +44,6 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
         id: reviewId ?? "",
         productId: product.id,
       });
-
-      console.log({ data });
 
       if (serverError || !data) {
         // toast.error("Failed to load review");
@@ -153,7 +149,27 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
               {product.reviewText ?? "Tell me what you loved and hated"}
             </h2>
 
-            <ReviewSelector />
+            <ReviewSelector productId={product.id} />
+          </motion.div>
+        )}
+
+        {step === 3 && (
+          <motion.div
+            key="step-1"
+            exit={{
+              opacity: 0,
+              x: -100,
+            }}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex h-full flex-col items-center justify-center gap-4"
+          >
+            <h2 className="text-lg">
+              {product.thanksText ??
+                "Thank you for your review! Share it with your friends!"}
+            </h2>
+
+            <p>Your review: {reviewData.data?.text}</p>
           </motion.div>
         )}
       </AnimatePresence>
