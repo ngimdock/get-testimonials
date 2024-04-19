@@ -17,6 +17,12 @@ import { getReviewAction, updateReviewAction } from "./reviews.action";
 import { ReviewType } from "./review.schema";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 
 const getCurrentStpe = (data?: Review) => {
   if (!data) return 0;
@@ -97,7 +103,7 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
             }}
             className="flex h-full flex-col items-center justify-center"
           >
-            <h2 className="text-lg">
+            <h2 className="text-lg font-bold">
               {product.noteText ?? `How much do you like ${product.name}?`}
             </h2>
 
@@ -122,7 +128,7 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
             animate={{ opacity: 1, x: 0 }}
             className="flex h-full flex-col items-center justify-center gap-4"
           >
-            <h2 className="text-lg">
+            <h2 className="text-lg font-bold">
               {product.informationText ?? "I need more information about you"}
             </h2>
 
@@ -145,7 +151,7 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
             animate={{ opacity: 1, x: 0 }}
             className="flex h-full flex-col items-center justify-center gap-4"
           >
-            <h2 className="text-lg">
+            <h2 className="text-lg font-bold">
               {product.reviewText ?? "Tell me what you loved and hated"}
             </h2>
 
@@ -162,14 +168,17 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
             }}
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex h-full flex-col items-center justify-center gap-4"
+            className="flex h-full max-w-lg flex-col items-center justify-center gap-4"
           >
-            <h2 className="text-lg">
-              {product.thanksText ??
-                "Thank you for your review! Share it with your friends!"}
+            <h2 className="text-lg font-bold">
+              {product.thanksText ?? "Thank you for your review!"}
             </h2>
 
-            <p>Your review: {reviewData.data?.text}</p>
+            <Card>
+              <CardHeader>
+                <CardDescription>{reviewData.data?.text}</CardDescription>
+              </CardHeader>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>

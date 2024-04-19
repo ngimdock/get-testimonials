@@ -6,18 +6,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { processAudioAction } from "./reviews.action";
+import { processAudioAction, updateReviewAction } from "./reviews.action";
 import { toast } from "sonner";
 import { useLocalStorage } from "react-use";
+import { Loader } from "lucide-react";
 
 export const ReviewSelector = ({ productId }: { productId: string }) => {
   return (
     <div className="w-full max-w-lg">
-      <Tabs defaultValue="audio" className="w-full">
+      <Tabs defaultValue="text" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="audio">Audio note</TabsTrigger>
           <TabsTrigger value="text">Text</TabsTrigger>
+          <TabsTrigger disabled value="audio">
+            Audio note
+          </TabsTrigger>
         </TabsList>
+        <TabsContent value="text">
+          <ReviewTextForm productId={productId} />
+        </TabsContent>
         <TabsContent value="audio" className="flex flex-col gap-2">
           <AudioComponent
             productId={productId}
@@ -30,16 +36,40 @@ export const ReviewSelector = ({ productId }: { productId: string }) => {
             Just record your voice we will convert it to text for you
           </p>
         </TabsContent>
-        <TabsContent value="text">
-          <InputText />
-        </TabsContent>
       </Tabs>
     </div>
   );
 };
 
-const InputText = () => {
+const ReviewTextForm = ({ productId }: { productId: string }) => {
   const [text, setText] = useState("");
+
+  const queryClient = useQueryClient();
+
+  const [reviewId] = useLocalStorage<string | null>(
+    `review-id-${productId}`,
+    null
+  );
+
+  const textMutation = useMutation({
+    mutationFn: async () => {
+      const { data, serverError } = await updateReviewAction({
+        id: reviewId as string,
+        text,
+        productId,
+      });
+
+      if (serverError || !data) {
+        toast.error(serverError ?? "Failed to update review text");
+        return;
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["review", data.id, "product", productId],
+      });
+    },
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <Textarea
@@ -48,8 +78,12 @@ const InputText = () => {
         onChange={(e) => setText(e.target.value)}
       />
 
-      <Button size="sm" onClick={() => console.log({ text })}>
-        Submit
+      <Button
+        disabled={!text || textMutation.isPending}
+        size="sm"
+        onClick={() => textMutation.mutate()}
+      >
+        {textMutation.isPending ? <Loader /> : <span>Submit</span>}
       </Button>
     </div>
   );
@@ -79,14 +113,12 @@ const AudioComponent = ({
     (err) => console.table(err) // onNotAllowedOrFound
   );
 
-  const mutation = useMutation({
+  const audioMutation = useMutation({
     mutationFn: async () => {
       if (!blob) {
         toast.error("No audio recorded");
         return;
       }
-
-      console.log({ reviewId });
 
       if (!reviewId) {
         toast.error("Review not found");
@@ -99,11 +131,6 @@ const AudioComponent = ({
       });
 
       formData.append("audio", file);
-
-      console.log({
-        productId,
-        reviewId,
-      });
 
       const { data, serverError } = await processAudioAction({
         formData,
@@ -144,7 +171,7 @@ const AudioComponent = ({
         <Button
           size="sm"
           onClick={() => {
-            mutation.mutate();
+            audioMutation.mutate();
           }}
         >
           Submit
