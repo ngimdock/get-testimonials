@@ -142,7 +142,7 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
 
         {step === 2 && (
           <motion.div
-            key="step-1"
+            key="step-2"
             exit={{
               opacity: 0,
               x: -100,
@@ -161,7 +161,7 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
 
         {step === 3 && (
           <motion.div
-            key="step-1"
+            key="step-3"
             exit={{
               opacity: 0,
               x: -100,
