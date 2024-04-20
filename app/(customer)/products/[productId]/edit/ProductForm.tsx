@@ -152,8 +152,6 @@ export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
                           return;
                         }
 
-                        console.log({ type: "form", file });
-
                         submitImage.mutate(file);
                       }}
                     />

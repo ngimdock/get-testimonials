@@ -1,4 +1,5 @@
 import { requiredCurrentUser } from "@/auth/current-user";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -11,6 +12,7 @@ import {
 import { LayoutTitle, LayoutWrapper } from "@/features/layout/layaout-wrapper";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
+import { Link2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -40,8 +42,6 @@ export default async function RoutePage(
 
   if (!product) return notFound();
 
-  console.log({ reviews: product.reviews });
-
   return (
     <LayoutWrapper>
       <LayoutTitle>{product.name}</LayoutTitle>
@@ -51,8 +51,28 @@ export default async function RoutePage(
           <CardHeader>
             <CardTitle>Details</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col items-start gap-2">
             <p>Slug: {product.slug}</p>
+
+            <Link
+              href={`/r/${product.slug}`}
+              className={buttonVariants({
+                size: "sm",
+              })}
+            >
+              <Link2 size={16} className="mr-2" />
+              Share review link
+            </Link>
+
+            <Link
+              href={`/wall/${product.slug}`}
+              className={buttonVariants({
+                size: "sm",
+              })}
+            >
+              <Link2 size={16} className="mr-2" />
+              Wall link
+            </Link>
           </CardContent>
         </Card>
 
@@ -63,8 +83,8 @@ export default async function RoutePage(
           <CardContent>
             <Table>
               <TableHeader>
-                <TableHead>Reviewer Name</TableHead>
-                <TableHead>Review text</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>text</TableHead>
               </TableHeader>
               <TableBody>
                 {product.reviews.map((review) => (

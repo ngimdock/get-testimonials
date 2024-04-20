@@ -13,8 +13,6 @@ export const SocialSelector = ({
   const [name, setName] = useState<string>("");
 
   const onSubmit = () => {
-    console.log({ url, name });
-
     if (!name) {
       toast.error("Please enter a name");
       return;
