@@ -30,7 +30,7 @@ export default async function RoutePage(props: PageParams<{}>) {
         <LayoutTitle>Products</LayoutTitle>
         <Link
           href="/products/new"
-          className={buttonVariants({ variant: "default" })}
+          className={buttonVariants({ variant: "secondary" })}
         >
           Create Product
         </Link>

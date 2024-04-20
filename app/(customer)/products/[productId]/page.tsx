@@ -12,7 +12,7 @@ import {
 import { LayoutTitle, LayoutWrapper } from "@/features/layout/layaout-wrapper";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
-import { Link2 } from "lucide-react";
+import { ArrowBigLeftIcon, Link2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -44,7 +44,21 @@ export default async function RoutePage(
 
   return (
     <LayoutWrapper>
-      <LayoutTitle>{product.name}</LayoutTitle>
+      <div className="flex items-center justify-between">
+        <Link href="/products" className="flex items-center">
+          <ArrowBigLeftIcon size={16} className="mr-2" />
+          <span>All product</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/products/${product.id}/edit`}
+            className={buttonVariants({ size: "sm", variant: "secondary" })}
+          >
+            Edit
+          </Link>
+          <LayoutTitle>{product.name}</LayoutTitle>
+        </div>
+      </div>
 
       <div className="flex gap-4 max-lg:flex-col">
         <Card className="flex-1">
