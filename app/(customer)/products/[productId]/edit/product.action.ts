@@ -4,11 +4,13 @@ import { ActionError, userAction } from "@/lib/safe-actions";
 import { ProductSchema } from "./product.schema";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { User } from "@prisma/client";
 
 export const createProductAction = userAction(
   ProductSchema,
   async (input, { user }) => {
     await verifyProductSlugIsUnique(input.slug);
+    await verifyUserPlan(user);
 
     const product = await prisma.product.create({
       data: {
@@ -42,6 +44,23 @@ export const updateProductAction = userAction(
     return { product };
   }
 );
+
+const verifyUserPlan = async (user: User) => {
+  if (user.plan === "PREMIUM") return;
+
+  const userProductCount = await prisma.product.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  console.log({ userProductCount });
+
+  if (userProductCount > 0)
+    throw new ActionError(
+      "You need to upgrade your plan to create more products"
+    );
+};
 
 const verifyProductSlugIsUnique = async (slug: string, productId?: string) => {
   const slugExists = await prisma.product.count({
