@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { env } from "../env";
 import { prisma } from "@/lib/prisma";
+import { stripe } from "@/lib/stripe";
 
 export const {
   handlers,
@@ -21,4 +22,26 @@ export const {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+
+  events: {
+    createUser: async ({ user }) => {
+      console.log({ userEvent: user });
+
+      if (!user.id || !user.email) return;
+
+      const stripeCustomer = await stripe.customers.create({
+        name: user.name ?? "",
+        email: user.email ?? "",
+      });
+
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          stripeCustomerId: stripeCustomer.id,
+        },
+      });
+    },
+  },
 });

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -13,6 +11,9 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import React, { PropsWithChildren, useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { currentUser } from "@/auth/current-user";
+import { User } from "@prisma/client";
+import { upgrateToPremiumAction } from "./upgrate-premium.action";
 
 type PricingCardProps = PropsWithChildren<{
   title: string;
@@ -21,6 +22,24 @@ type PricingCardProps = PropsWithChildren<{
   features: string[];
   popular?: boolean;
 }>;
+
+export const PricingSection = async () => {
+  const user = await currentUser();
+
+  return (
+    <div className="py-8">
+      <PricingHeader
+        title="Pricing Plans"
+        subtitle="Choose the plan that's right for you"
+      />
+      <section className="mt-8 flex flex-col justify-center gap-6 sm:flex-row sm:flex-wrap">
+        {plans(user).map((plan) => {
+          return <PricingCard key={plan.title} {...plan} />;
+        })}
+      </section>
+    </div>
+  );
+};
 
 const PricingHeader = ({
   title,
@@ -85,28 +104,26 @@ const CheckItem = ({ text }: { text: string }) => (
   </div>
 );
 
-export const PricingSection = () => {
-  const [isYearly, setIsYearly] = useState(false);
-  const togglePricingPeriod = (value: string) =>
-    setIsYearly(parseInt(value) === 1);
+const plans = (user: User | null): PricingCardProps[] => {
+  const signInLink = (
+    <Link
+      href="/api/auth/signin"
+      className={cn(
+        buttonVariants({ variant: "secondary", size: "sm" }),
+        "w-full"
+      )}
+    >
+      Sign In
+    </Link>
+  );
 
-  const plans: PricingCardProps[] = [
+  return [
     {
       title: "Basic",
       monthlyPrice: 10,
       description: "To try our product for free",
       features: ["Create 1 product", "Get 10 reviews"],
-      children: (
-        <Link
-          href="/api/auth/signin"
-          className={cn(
-            buttonVariants({ variant: "secondary", size: "sm" }),
-            "w-full"
-          )}
-        >
-          Sign In
-        </Link>
-      ),
+      children: signInLink,
     },
     {
       title: "Pro",
@@ -121,24 +138,23 @@ export const PricingSection = () => {
         "Get a 'Wall of reviews'   ",
       ],
       popular: true,
-      children: (
-        <Button className="w-full" size="lg">
-          Grap it
-        </Button>
+      children: !user ? (
+        signInLink
+      ) : (
+        <form className="w-full">
+          <Button
+            formAction={async () => {
+              "use server";
+
+              await upgrateToPremiumAction("");
+            }}
+            size="lg"
+            className="w-full"
+          >
+            Grap it
+          </Button>
+        </form>
       ),
     },
   ];
-  return (
-    <div className="py-8">
-      <PricingHeader
-        title="Pricing Plans"
-        subtitle="Choose the plan that's right for you"
-      />
-      <section className="mt-8 flex flex-col justify-center gap-6 sm:flex-row sm:flex-wrap">
-        {plans.map((plan) => {
-          return <PricingCard key={plan.title} {...plan} />;
-        })}
-      </section>
-    </div>
-  );
 };
