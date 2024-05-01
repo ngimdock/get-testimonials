@@ -105,7 +105,7 @@ const CheckItem = ({ text }: { text: string }) => (
 );
 
 const plans = (user: User | null): PricingCardProps[] => {
-  const signInLink = (
+  const SignInLink = (
     <Link
       href="/api/auth/signin"
       className={cn(
@@ -123,7 +123,7 @@ const plans = (user: User | null): PricingCardProps[] => {
       monthlyPrice: 10,
       description: "To try our product for free",
       features: ["Create 1 product", "Get 10 reviews"],
-      children: signInLink,
+      children: SignInLink,
     },
     {
       title: "Pro",
@@ -139,7 +139,7 @@ const plans = (user: User | null): PricingCardProps[] => {
       ],
       popular: true,
       children: !user ? (
-        signInLink
+        SignInLink
       ) : (
         <form className="w-full">
           <Button

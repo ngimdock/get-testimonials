@@ -36,7 +36,7 @@ export default async function RoutePage(props: PageParams<{}>) {
 }
 
 async function userIsAuthorizeToCreateProduct(user: User) {
-  const NUMBER_OF_FREE_PRODUCTS = 2;
+  const NUMBER_OF_FREE_PRODUCTS = 1;
   if (user.plan === "PREMIUM") return true;
 
   const userProductCount = await prisma.product.count({

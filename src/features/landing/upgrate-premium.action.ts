@@ -1,10 +1,15 @@
 "use server";
 
 import { env } from "@/env";
+import {
+  GET_TESTIMONIALS_STRIPE_ID_DEV,
+  GET_TESTIMONIALS_STRIPE_ID_PROD,
+} from "@/utils/constants";
 import { ActionError, userAction } from "@/lib/safe-actions";
 import { stripe } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { getServerUrl } from "@/utils/server-url";
 
 export const upgrateToPremiumAction = userAction(
   z.string(), // Pass a schema a no need to use
@@ -18,14 +23,14 @@ export const upgrateToPremiumAction = userAction(
       customer: stripeCustomerId,
       mode: "subscription",
       payment_method_types: ["card", "link"],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cancel`,
+      success_url: `${getServerUrl()}/success`,
+      cancel_url: `${getServerUrl()}/cancel`,
       line_items: [
         {
           price:
             env.NODE_ENV === "development"
-              ? "price_1P9rdHLDSiiDbLlSnP4WAIaE"
-              : "",
+              ? GET_TESTIMONIALS_STRIPE_ID_DEV
+              : GET_TESTIMONIALS_STRIPE_ID_PROD,
           quantity: 1,
         },
       ],

@@ -9,6 +9,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     OPENAI_API_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
   client: {},
   experimental__runtimeEnv: {
