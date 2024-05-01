@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { processAudioAction, updateReviewAction } from "./reviews.action";
 import { toast } from "sonner";
 import { useLocalStorage } from "react-use";
-import { Loader } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 
 export const ReviewSelector = ({ productId }: { productId: string }) => {
   return (
@@ -53,6 +53,9 @@ const ReviewTextForm = ({ productId }: { productId: string }) => {
 
   const textMutation = useMutation({
     mutationFn: async () => {
+      // wait 5 seconds
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
       const { data, serverError } = await updateReviewAction({
         id: reviewId as string,
         text,
@@ -83,7 +86,11 @@ const ReviewTextForm = ({ productId }: { productId: string }) => {
         size="sm"
         onClick={() => textMutation.mutate()}
       >
-        {textMutation.isPending ? <Loader /> : <span>Submit</span>}
+        {textMutation.isPending ? (
+          <Loader2 className="size-3 animate-spin" />
+        ) : (
+          <span>Submit</span>
+        )}
       </Button>
     </div>
   );

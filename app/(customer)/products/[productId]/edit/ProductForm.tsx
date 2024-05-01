@@ -28,6 +28,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { uploadImageAction } from "@/features/uploads/upload.action";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Loader2 } from "lucide-react";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 export type ProductFormProps = {
   productId?: string;
@@ -67,6 +69,7 @@ export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
       toast.success(isCreate ? "Product created" : "Product updated");
 
       router.push(`/products/${data.product.id}`);
+      router.refresh();
     },
   });
 
@@ -156,8 +159,12 @@ export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
                       }}
                     />
                   </FormControl>
+                  {submitImage.isPending && (
+                    <Loader2 className="size-6 animate-spin" />
+                  )}
                   {field.value && (
-                    <Avatar>
+                    <Avatar className="rounded-sm">
+                      <AvatarFallback>{field.value[0]}</AvatarFallback>
                       <AvatarImage src={field.value} />
                     </Avatar>
                   )}
@@ -228,7 +235,10 @@ export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
             )}
           />
 
-          <Button>{isCreate ? "Create Product" : "Save Product"}</Button>
+          <Button>
+            {mutation.isPending && <Loader2 className="size-3 animate-spin" />}
+            {isCreate ? "Create Product" : "Save Product"}
+          </Button>
         </Form>
       </CardContent>
     </Card>
