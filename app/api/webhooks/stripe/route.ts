@@ -1,12 +1,9 @@
 import { env } from "@/env";
-import {
-  GET_TESTIMONIALS_STRIPE_ID_DEV,
-  GET_TESTIMONIALS_STRIPE_ID_PROD,
-} from "@/utils/constants";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { Plan } from "@prisma/client";
 
 export const POST = async (req: NextRequest) => {
   let body = await req.text();
@@ -34,36 +31,89 @@ export const POST = async (req: NextRequest) => {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
-
-      // check if the priceId is valid before proceeding
-
-      const customerId = session.customer as string;
-
-      const user = await prisma.user.findFirst({
-        where: {
-          stripeCustomerId: customerId,
-        },
-      });
-
-      if (!user)
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-      await prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          plan: "PREMIUM",
-        },
-      });
+      await handleCheckoutSessionCompleted(session);
 
       break;
     }
+    case "invoice.paid": {
+      const invoice = event.data.object as Stripe.Invoice;
 
-    default: {
-      console.log("Unhandled event:", event.type);
+      await handleInvoicePaid(invoice);
+      break;
     }
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      await handleCustomerSubscriptionDeleted(subscription);
+      break;
+    }
+
+    // handle ths case for failed invoice
   }
 
   return NextResponse.json({ received: true });
 };
+
+const handleCheckoutSessionCompleted = async (
+  session: Stripe.Checkout.Session
+) => {
+  //@TODO check if the priceId in the checkout session corresponds to the buyed product before change user plan
+
+  const customerId = session.customer as string;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      stripeCustomerId: customerId,
+    },
+  });
+
+  if (!user)
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  await changeUserPlan(user.id, "PREMIUM");
+};
+
+const handleInvoicePaid = async (invoice: Stripe.Invoice) => {
+  //@TODO check if the priceId in the invoice corresponds to the buyed product before change user plan
+
+  const customerId = invoice.customer as string;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      stripeCustomerId: customerId,
+    },
+  });
+
+  if (!user)
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  await changeUserPlan(user.id, "PREMIUM");
+};
+
+const handleCustomerSubscriptionDeleted = async (
+  subscription: Stripe.Subscription
+) => {
+  const customerId = subscription.customer as string;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      stripeCustomerId: customerId,
+    },
+  });
+
+  if (!user)
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  await changeUserPlan(user.id, "FREE");
+};
+
+async function changeUserPlan(userId: string, plan: Plan) {
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      plan,
+    },
+  });
+}
