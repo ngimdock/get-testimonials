@@ -4,6 +4,10 @@ import { stripe } from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Plan } from "@prisma/client";
+import { resend } from "@/lib/resend";
+import { EMAIL_FROM } from "@/config";
+import PremiumEmail from "../../../../emails/PremiumEmail";
+import DowngradeEmail from "../../../../emails/DowngradeEmail";
 
 export const POST = async (req: NextRequest) => {
   let body = await req.text();
@@ -48,7 +52,7 @@ export const POST = async (req: NextRequest) => {
       break;
     }
 
-    // handle ths case for failed invoice
+    // handle the case for failed invoice
   }
 
   return NextResponse.json({ received: true });
@@ -71,6 +75,13 @@ const handleCheckoutSessionCompleted = async (
     return NextResponse.json({ error: "User not found" }, { status: 404 });
 
   await changeUserPlan(user.id, "PREMIUM");
+
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: user.email ?? "",
+    subject: "Your are now premium user",
+    react: PremiumEmail(),
+  });
 };
 
 const handleInvoicePaid = async (invoice: Stripe.Invoice) => {
@@ -105,6 +116,13 @@ const handleCustomerSubscriptionDeleted = async (
     return NextResponse.json({ error: "User not found" }, { status: 404 });
 
   await changeUserPlan(user.id, "FREE");
+
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: user.email ?? "",
+    subject: "You are not premium user anymore",
+    react: DowngradeEmail(),
+  });
 };
 
 async function changeUserPlan(userId: string, plan: Plan) {

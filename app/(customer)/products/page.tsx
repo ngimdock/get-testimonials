@@ -22,6 +22,16 @@ export default async function RoutePage(props: PageParams<{}>) {
     where: {
       userId: user.id,
     },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      _count: {
+        select: {
+          reviews: true,
+        },
+      },
+    },
   });
 
   return (
@@ -37,7 +47,21 @@ export default async function RoutePage(props: PageParams<{}>) {
       </div>
       <Card className="p-4">
         {products.length ? (
-          <ProductTable products={products} />
+          <Table>
+            <TableHeader>
+              <TableHead>Product Name</TableHead>
+              <TableHead>Product Slug</TableHead>
+              <TableHead>Reviews </TableHead>
+            </TableHeader>
+            <TableBody>
+              {products.map((product) => (
+                <CustomTableRow
+                  key={product.id}
+                  product={{ ...product, reviews: product._count.reviews }}
+                />
+              ))}
+            </TableBody>
+          </Table>
         ) : (
           <Link
             href="/products/new"
@@ -51,23 +75,18 @@ export default async function RoutePage(props: PageParams<{}>) {
   );
 }
 
-function ProductTable({ products }: { products: Product[] }) {
+function CustomTableRow({
+  product,
+}: {
+  product: Partial<Product & { reviews: number }>;
+}) {
   return (
-    <Table>
-      <TableHeader>
-        <TableHead>Product Name</TableHead>
-        <TableHead>Product Slug</TableHead>
-      </TableHeader>
-      <TableBody>
-        {products.map((product) => (
-          <TableRow key={product.id}>
-            <Link href={`/products/${product.id}`}>
-              <TableCell>{product.name}</TableCell>
-            </Link>
-            <TableCell className="font-mono">{product.slug}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <TableRow>
+      <Link href={`/products/${product.id}`}>
+        <TableCell>{product.name}</TableCell>
+      </Link>
+      <TableCell className="font-mono">{product.slug}</TableCell>
+      <TableCell className="font-mono">{product.reviews}</TableCell>
+    </TableRow>
   );
 }
