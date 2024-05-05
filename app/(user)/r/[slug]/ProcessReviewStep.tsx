@@ -7,22 +7,12 @@ import RatingSelector from "./RatingSelector";
 import { motion, AnimatePresence } from "framer-motion";
 import { SocialSelector } from "./SocialSelector";
 import { ReviewSelector } from "./ReviewSelector";
-import {
-  Mutation,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getReviewAction, updateReviewAction } from "./reviews.action";
 import { ReviewType } from "./review.schema";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 
 const getCurrentStpe = (data?: Review) => {
   if (!data) return 0;
@@ -155,7 +145,12 @@ export const ProcessReviewStep = ({ product }: { product: Product }) => {
               {product.reviewText ?? "Tell me what you loved and hated"}
             </h2>
 
-            <ReviewSelector productId={product.id} />
+            <ReviewSelector
+              productId={product.id}
+              onSubmitText={(text) => {
+                updateData({ text });
+              }}
+            />
           </motion.div>
         )}
 

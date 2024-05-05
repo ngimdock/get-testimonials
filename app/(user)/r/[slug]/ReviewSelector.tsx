@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { ComponentPropsWithoutRef, useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,13 @@ import { toast } from "sonner";
 import { useLocalStorage } from "react-use";
 import { Loader, Loader2 } from "lucide-react";
 
-export const ReviewSelector = ({ productId }: { productId: string }) => {
+export const ReviewSelector = ({
+  productId,
+  onSubmitText,
+}: {
+  productId: string;
+  onSubmitText: (text: string) => void;
+}) => {
   return (
     <div className="w-full max-w-lg">
       <Tabs defaultValue="text" className="w-full">
@@ -22,7 +28,7 @@ export const ReviewSelector = ({ productId }: { productId: string }) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="text">
-          <ReviewTextForm productId={productId} />
+          <ReviewTextForm productId={productId} onSubmitText={onSubmitText} />
         </TabsContent>
         <TabsContent value="audio" className="flex flex-col gap-2">
           <AudioComponent
@@ -41,35 +47,15 @@ export const ReviewSelector = ({ productId }: { productId: string }) => {
   );
 };
 
-const ReviewTextForm = ({ productId }: { productId: string }) => {
+const ReviewTextForm = ({
+  productId,
+  onSubmitText,
+}: ComponentPropsWithoutRef<typeof ReviewSelector>) => {
   const [text, setText] = useState("");
-
-  const queryClient = useQueryClient();
-
-  const [reviewId] = useLocalStorage<string | null>(
-    `review-id-${productId}`,
-    null
-  );
 
   const textMutation = useMutation({
     mutationFn: async () => {
-      // wait 5 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      const { data, serverError } = await updateReviewAction({
-        id: reviewId as string,
-        text,
-        productId,
-      });
-
-      if (serverError || !data) {
-        toast.error(serverError ?? "Failed to update review text");
-        return;
-      }
-
-      await queryClient.invalidateQueries({
-        queryKey: ["review", data.id, "product", productId],
-      });
+      onSubmitText(text);
     },
   });
 
