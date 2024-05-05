@@ -1,6 +1,5 @@
-import { requiredCurrentUser } from "@/auth/current-user";
+import { currentUser, requiredCurrentUser } from "@/auth/current-user";
 import { buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,

@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useEffect } from "react";
+import { ModeToggle } from "../theme/ModeToggle";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { SignInButton } from "../auth/SignInButton";
 
 function useBoundedScroll(threshold: number) {
   let { scrollY } = useScroll();
@@ -46,11 +44,6 @@ export const LeandingHeader = () => {
     <motion.header
       style={{
         height: useTransform(scrollYBoundedProgressDelayed, [0, 1], [80, 50]),
-        backgroundColor: useMotionTemplate`rgb(255 255 255 / ${useTransform(
-          scrollYBoundedProgressDelayed,
-          [0, 1],
-          [1, 0.1]
-        )})`,
       }}
       className="fixed inset-x-0 flex h-20 shadow backdrop-blur-md"
     >
@@ -75,10 +68,12 @@ export const LeandingHeader = () => {
               [1, 0]
             ),
           }}
-          className="flex space-x-4 text-sm font-medium text-foreground"
+          className="flex items-center space-x-4 text-sm font-medium text-foreground"
         >
-          <a href="#pricing">Pricing</a>
           <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <AppButton />
+          <ModeToggle />
         </motion.nav>
       </div>
     </motion.header>
@@ -87,3 +82,11 @@ export const LeandingHeader = () => {
 
 let clamp = (number: number, min: number, max: number) =>
   Math.min(Math.max(number, min), max);
+
+export const AppButton = () => {
+  const session = useSession();
+
+  if (session.data?.user) return <Link href="/products">App</Link>;
+
+  return <SignInButton />;
+};

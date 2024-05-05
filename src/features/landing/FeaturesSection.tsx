@@ -102,12 +102,12 @@ export const FeaturesSection = () => {
 
   return (
     <>
-      <SectionLayout className="pb-2">
+      <SectionLayout id="features" sectionClassName="pb-2">
         <h2 className="text-center text-3xl font-bold text-foreground">
           The review process made simple
         </h2>
       </SectionLayout>
-      <SectionLayout className="bg-gradient-to-r from-violet-600 to-indigo-600 py-12">
+      <SectionLayout sectionClassName="bg-gradient-to-r light text-foreground from-violet-600 to-indigo-600 py-12 shadow rounded-lg">
         <AnimatePresence mode="wait">
           {step === 0 && (
             <motion.div
@@ -118,7 +118,7 @@ export const FeaturesSection = () => {
               }}
               className="flex h-full flex-col items-center justify-center"
             >
-              <h2 className="text-lg font-bold">
+              <h2 className="text-center text-lg font-bold">
                 How much do you like get-testimonial.com ?
               </h2>
 
@@ -141,7 +141,7 @@ export const FeaturesSection = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex h-full flex-col items-center justify-center gap-4"
             >
-              <h2 className="text-lg font-bold">
+              <h2 className="text-center text-lg font-bold">
                 I need more information about you
               </h2>
 
@@ -164,7 +164,7 @@ export const FeaturesSection = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex h-full flex-col items-center justify-center gap-4"
             >
-              <h2 className="text-lg font-bold">
+              <h2 className="text-center text-lg font-bold">
                 Tell me what you loved and hated
               </h2>
 
@@ -186,7 +186,9 @@ export const FeaturesSection = () => {
               animate={{ opacity: 1, x: 0 }}
               className="mx-auto flex h-full max-w-lg flex-col items-center justify-center gap-4 "
             >
-              <h2 className="text-lg font-bold">Thank you for your review!</h2>
+              <h2 className="text-center text-lg font-bold">
+                Thank you for your review!
+              </h2>
 
               <Card className="mx-auto">
                 <CardHeader>
@@ -197,12 +199,12 @@ export const FeaturesSection = () => {
           )}
         </AnimatePresence>
       </SectionLayout>
-      <SectionLayout>
+      <SectionLayout className="flex flex-col items-center justify-center gap-8">
         <h2 className="text-center text-3xl font-bold text-foreground">
           And get your review all to share
         </h2>
 
-        <div className="mt-8">
+        <div>
           <h2 className="text-4xl font-extrabold">4 / 5</h2>
           <p>144 reviews</p>
         </div>

@@ -4,10 +4,10 @@ import { SectionLayout } from "./SectionLayout";
 
 export const HeroSection = () => {
   return (
-    <SectionLayout>
+    <SectionLayout className="text-center">
       <a
         href="#"
-        className="mb-7 inline-flex items-center justify-between rounded-full  bg-accent/50 p-1 pr-4 text-sm text-card-foreground hover:bg-accent hover:text-accent-foreground"
+        className="mx-auto mb-7 flex w-fit items-center justify-between rounded-full  bg-accent/50 p-1 pr-4 text-sm text-card-foreground hover:bg-accent hover:text-accent-foreground"
         role="alert"
       >
         <span className="mr-3 rounded-full bg-primary px-4 py-1.5 text-xs  text-primary-foreground">

@@ -28,7 +28,7 @@ export const PricingSection = async () => {
   const user = await currentUser();
 
   return (
-    <SectionLayout>
+    <SectionLayout id="pricing">
       <PricingHeader
         title="Pricing Plans"
         subtitle="Choose the plan that's right for you"
