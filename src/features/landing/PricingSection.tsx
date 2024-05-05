@@ -14,6 +14,7 @@ import Link from "next/link";
 import { currentUser } from "@/auth/current-user";
 import { User } from "@prisma/client";
 import { upgrateToPremiumAction } from "./upgrate-premium.action";
+import { SectionLayout } from "./SectionLayout";
 
 type PricingCardProps = PropsWithChildren<{
   title: string;
@@ -27,7 +28,7 @@ export const PricingSection = async () => {
   const user = await currentUser();
 
   return (
-    <div className="py-8">
+    <SectionLayout>
       <PricingHeader
         title="Pricing Plans"
         subtitle="Choose the plan that's right for you"
@@ -37,7 +38,7 @@ export const PricingSection = async () => {
           return <PricingCard key={plan.title} {...plan} />;
         })}
       </section>
-    </div>
+    </SectionLayout>
   );
 };
 

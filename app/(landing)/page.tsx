@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { FeaturesSection } from "@/features/landing/FeaturesSection";
 import { HeroSection } from "@/features/landing/HeroSection";
 import { LeandingHeader } from "@/features/landing/LeandingHeader";
+import { PricingSection } from "@/features/landing/PricingSection";
+import { ProblemsSection } from "@/features/landing/ProblemsSection";
 import Image from "next/image";
 
 export default function Home() {
@@ -11,6 +13,8 @@ export default function Home() {
       <LeandingHeader />
       <HeroSection />
       <FeaturesSection />
+      <ProblemsSection />
+      <PricingSection />
     </main>
   );
 }
