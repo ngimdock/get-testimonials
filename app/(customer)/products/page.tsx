@@ -9,7 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { LayoutTitle, LayoutWrapper } from "@/features/layout/layaout-wrapper";
+import {
+  LayoutDescription,
+  LayoutTitle,
+  LayoutWrapper,
+} from "@/features/layout/layaout-wrapper";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 import { Product } from "@prisma/client";
@@ -28,7 +32,13 @@ export default async function RoutePage(props: PageParams<{}>) {
       slug: true,
       _count: {
         select: {
-          reviews: true,
+          reviews: {
+            where: {
+              text: {
+                not: null,
+              },
+            },
+          },
         },
       },
     },
@@ -37,7 +47,10 @@ export default async function RoutePage(props: PageParams<{}>) {
   return (
     <LayoutWrapper>
       <div className="flex items-center justify-between">
-        <LayoutTitle>Products</LayoutTitle>
+        <div className=" space-y-0.5">
+          <LayoutTitle>Products</LayoutTitle>
+          <LayoutDescription>Create product to review.</LayoutDescription>
+        </div>
         <Link
           href="/products/new"
           className={buttonVariants({ variant: "secondary" })}
@@ -45,32 +58,30 @@ export default async function RoutePage(props: PageParams<{}>) {
           Create Product
         </Link>
       </div>
-      <Card className="p-4">
-        {products.length ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Product Name</TableHead>
-              <TableHead>Product Slug</TableHead>
-              <TableHead>Reviews </TableHead>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => (
-                <CustomTableRow
-                  key={product.id}
-                  product={{ ...product, reviews: product._count.reviews }}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <Link
-            href="/products/new"
-            className="flex w-full  items-center justify-center rounded-lg border-2 border-dashed border-primary p-8 transition-colors hover:bg-accent/40 lg:p-12"
-          >
-            Create Product
-          </Link>
-        )}
-      </Card>
+      {products.length ? (
+        <Table>
+          <TableHeader>
+            <TableHead>Product Name</TableHead>
+            <TableHead>Product Slug</TableHead>
+            <TableHead>Reviews </TableHead>
+          </TableHeader>
+          <TableBody>
+            {products.map((product) => (
+              <CustomTableRow
+                key={product.id}
+                product={{ ...product, reviews: product._count.reviews }}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <Link
+          href="/products/new"
+          className="flex w-full  items-center justify-center rounded-lg border-2 border-dashed border-primary p-8 transition-colors hover:bg-accent/40 lg:p-12"
+        >
+          Create Product
+        </Link>
+      )}
     </LayoutWrapper>
   );
 }
