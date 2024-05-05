@@ -3,7 +3,7 @@ import { SignInButton } from "./SignInButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoggedInDropdown } from "./LoggedInDropdown";
 import { currentUser } from "@/auth/current-user";
-import { Star } from "lucide-react";
+import { Crown } from "lucide-react";
 
 export const LoggedInButton = async () => {
   const user = await currentUser();
@@ -14,7 +14,7 @@ export const LoggedInButton = async () => {
     <LoggedInDropdown>
       <Button variant="outline" size="sm">
         {user.plan === "PREMIUM" && (
-          <Star size={15} fill="currentColor" className="mr-2" />
+          <Crown size={15} fill="currentColor" className="mr-2" />
         )}
         <Avatar className="size-6">
           <AvatarFallback>{user.name?.[0]}</AvatarFallback>

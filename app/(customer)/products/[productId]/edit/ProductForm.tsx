@@ -30,6 +30,7 @@ import { uploadImageAction } from "@/features/uploads/upload.action";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Loader2 } from "lucide-react";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type ProductFormProps = {
   productId?: string;
@@ -103,139 +104,241 @@ export const ProductForm = ({ productId, defaultValues }: ProductFormProps) => {
         <Form
           form={form}
           onSubmit={async (values) => {
+            console.log({ values });
+
             await mutation.mutateAsync(values);
           }}
-          className="flex flex-col space-y-4 "
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="iphone 15" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The name of the product to review
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-
-                <div className="flex items-center gap-4">
-                  <FormControl className="flex-1">
-                    <Input
-                      type="file"
-                      placeholder="Product image"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-
-                        if (!file) return;
-
-                        if (file.size > 1024 * 1024) {
-                          e.target.value = "";
-                          toast.error(
-                            "File is too big. Maximum file size is 1mb"
-                          );
-                          return;
-                        }
-
-                        if (!file.type.startsWith("image")) {
-                          e.target.value = "";
-                          toast.error("File is not an image");
-                          return;
-                        }
-
-                        submitImage.mutate(file);
-                      }}
-                    />
-                  </FormControl>
-                  {submitImage.isPending && (
-                    <Loader2 className="size-6 animate-spin" />
+          <Tabs defaultValue="general">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="texts">Texts</TabsTrigger>
+            </TabsList>
+            <TabsContent value="general">
+              <div className="flex flex-col space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="iphone 15" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        The name of the product to review
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                  {field.value && (
-                    <Avatar className="rounded-sm">
-                      <AvatarFallback>{field.value[0]}</AvatarFallback>
-                      <AvatarImage src={field.value} />
-                    </Avatar>
+                />
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Image</FormLabel>
+
+                      <div className="flex items-center gap-4">
+                        <FormControl className="flex-1">
+                          <Input
+                            type="file"
+                            placeholder="Product image"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+
+                              if (!file) return;
+
+                              if (file.size > 1024 * 1024) {
+                                e.target.value = "";
+                                toast.error(
+                                  "File is too big. Maximum file size is 1mb"
+                                );
+                                return;
+                              }
+
+                              if (!file.type.startsWith("image")) {
+                                e.target.value = "";
+                                toast.error("File is not an image");
+                                return;
+                              }
+
+                              submitImage.mutate(file);
+                            }}
+                          />
+                        </FormControl>
+                        {submitImage.isPending && (
+                          <Loader2 className="size-6 animate-spin" />
+                        )}
+                        {field.value && (
+                          <Avatar className="rounded-sm">
+                            <AvatarFallback>{field.value[0]}</AvatarFallback>
+                            <AvatarImage src={field.value} />
+                          </Avatar>
+                        )}
+                      </div>
+                      <FormDescription>
+                        The image of the product
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </div>
-                <FormDescription>The image of the product</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="iphone-15"
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value
+                              .replaceAll(/ /g, "-")
+                              .toLowerCase();
 
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="iphone-15"
-                    {...field}
-                    onChange={(e) => {
-                      const value = e.target.value
-                        .replaceAll(/ /g, "-")
-                        .toLowerCase();
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        The slug is used in the url of the review page
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="backgroundColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Background Color</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder="Select a background color"
+                              {...field}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {GRADIENTS_COLORS_CLASSES.map((gradient) => (
+                              <SelectItem key={gradient} value={gradient}>
+                                <div
+                                  className={cn(
+                                    gradient,
+                                    "w-96 h-8 rounded-md"
+                                  )}
+                                ></div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>
+                        The review page background color
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="texts">
+              <div className="flex flex-col space-y-6">
+                <FormField
+                  control={form.control}
+                  name="noteText"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Note text</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Give note /5."
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        The title where the user can add the node /5.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      field.onChange(value);
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  The slug is used in the url of the review page
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormField
+                  control={form.control}
+                  name="informationText"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Information text</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Please give us some informations"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        The text displayed while asking for reviewer information
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <FormField
-            control={form.control}
-            name="backgroundColor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Background Color</FormLabel>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder="Select a background color"
-                        {...field}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {GRADIENTS_COLORS_CLASSES.map((gradient) => (
-                        <SelectItem key={gradient} value={gradient}>
-                          <div
-                            className={cn(gradient, "w-96 h-8 rounded-md")}
-                          ></div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormDescription>
-                  The review page background color
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormField
+                  control={form.control}
+                  name="reviewText"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Review text</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your review message"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        The title to display while asking review message
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <Button>
+                <FormField
+                  control={form.control}
+                  name="thanksText"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Thanks text</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Thanks you for your review !"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        The title to display to thanks the user for reviewing
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+          <Button className="mt-6 w-full">
             {mutation.isPending && <Loader2 className="size-3 animate-spin" />}
             {isCreate ? "Create Product" : "Save Product"}
           </Button>

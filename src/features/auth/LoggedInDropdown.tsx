@@ -8,7 +8,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PropsWithChildren } from "react";
 import { signOutAction } from "./auth.action";
-import { Home, LogOut, Square } from "lucide-react";
+import {
+  FireExtinguisher,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Square,
+} from "lucide-react";
 import Link from "next/link";
 
 export type LoggedInDropdownProps = PropsWithChildren;
@@ -22,6 +28,12 @@ export const LoggedInDropdown = ({ children }: LoggedInDropdownProps) => {
           <Link href="/home" className="w-full">
             <Home size={16} className="mr-2" />
             Home
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="w-full">
+            <LayoutDashboard size={16} className="mr-2" />
+            Dashboard
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

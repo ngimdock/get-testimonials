@@ -8,6 +8,7 @@ import { User } from "@prisma/client";
 import { resend } from "@/lib/resend";
 import { EMAIL_FROM } from "@/config";
 import FirstProductCreatedEmail from "../../../../../emails/FirstProductCreatedEmail";
+import { redirect } from "next/navigation";
 
 export const createProductAction = userAction(
   ProductSchema,
@@ -109,3 +110,15 @@ const sendEmailIfUserCreateFirstProduct = async (user: User) => {
     }),
   });
 };
+
+export const deleteProductAction = userAction(
+  z.string(),
+  async (productId, { user }) => {
+    await prisma.product.delete({
+      where: {
+        id: productId,
+        userId: user.id,
+      },
+    });
+  }
+);

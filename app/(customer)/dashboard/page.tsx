@@ -69,7 +69,7 @@ export default async function Page(props: PageParams<{}>) {
           </CardHeader>
         </Card>
 
-        <Card className="min-w-52">
+        <Card className="w-full max-w-lg">
           <CardHeader>
             <CardTitle>Last review</CardTitle>
           </CardHeader>
@@ -88,6 +88,9 @@ export default async function Page(props: PageParams<{}>) {
               className={buttonVariants({ size: "lg" })}
             >
               Create Product
+            </Link>
+            <Link href="/products" className={buttonVariants({ size: "lg" })}>
+              Products
             </Link>
           </CardContent>
         </Card>

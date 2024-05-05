@@ -60,9 +60,11 @@ export default async function RoutePage(props: PageParams<{}>) {
       {products.length ? (
         <Table>
           <TableHeader>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Product Slug</TableHead>
-            <TableHead>Reviews </TableHead>
+            <TableRow>
+              <TableHead>Product Name</TableHead>
+              <TableHead>Product Slug</TableHead>
+              <TableHead>Reviews </TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
             {products.map((product) => (

@@ -12,9 +12,10 @@ import {
 import { LayoutTitle, LayoutWrapper } from "@/features/layout/layaout-wrapper";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
-import { ArrowBigLeftIcon, Link2 } from "lucide-react";
+import { Link2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DeleteButton } from "./DeleteButton";
 
 export default async function RoutePage(
   props: PageParams<{ productId: string }>
@@ -45,18 +46,18 @@ export default async function RoutePage(
   return (
     <LayoutWrapper>
       <div className="flex items-center justify-between">
-        <Link href="/products" className="flex items-center">
-          <ArrowBigLeftIcon size={16} className="mr-2" />
-          <span>All product</span>
-        </Link>
-        <div className="flex items-center gap-3">
+        <div className=" space-y-0.5">
+          <LayoutTitle>{product.name}</LayoutTitle>
+        </div>
+        <div className="flex items-center gap-2">
           <Link
             href={`/products/${product.id}/edit`}
-            className={buttonVariants({ size: "sm", variant: "secondary" })}
+            className={buttonVariants({ variant: "secondary", size: "sm" })}
           >
             Edit
           </Link>
-          <LayoutTitle>{product.name}</LayoutTitle>
+
+          <DeleteButton productId={product.id} />
         </div>
       </div>
 
@@ -97,8 +98,10 @@ export default async function RoutePage(
           <CardContent>
             <Table>
               <TableHeader>
-                <TableHead>Name</TableHead>
-                <TableHead>text</TableHead>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>text</TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 {product.reviews.map((review) => (

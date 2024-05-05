@@ -86,7 +86,7 @@ let clamp = (number: number, min: number, max: number) =>
 export const AppButton = () => {
   const session = useSession();
 
-  if (session.data?.user) return <Link href="/products">App</Link>;
+  if (session.data?.user) return <Link href="/dashboard">App</Link>;
 
   return <SignInButton />;
 };
