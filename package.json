@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "mi": "npx prisma migrate dev",
     "db": "npx prisma studio",
-    "email": "email dev"
+    "email": "email dev",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.2",
