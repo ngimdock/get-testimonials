@@ -3,12 +3,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "./Providers";
+import { getServerUrl } from "@/utils/server-url";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "get-testimonials.com",
   description: "Get more reviews and money",
+  metadataBase: new URL(getServerUrl()),
 };
 
 export default function RootLayout({
