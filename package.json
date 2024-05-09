@@ -11,7 +11,8 @@
     "db": "npx prisma studio",
     "email": "email dev",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
+    "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
+    "clean": "next lint --fix && tsc --noEmit && prettier --write ."
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.2",

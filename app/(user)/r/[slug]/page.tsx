@@ -4,7 +4,7 @@ import type { PageParams } from "@/types/next";
 import { notFound } from "next/navigation";
 import { ProcessReviewStep } from "./ProcessReviewStep";
 
-export const maxDuration = 360;
+export const maxDuration = 60;
 
 export default async function RoutePage(props: PageParams<{ slug: string }>) {
   const product = await prisma.product.findUnique({
